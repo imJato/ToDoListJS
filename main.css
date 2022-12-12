@@ -1,0 +1,21 @@
+body{
+    background-color: #c0c0c0;
+    text-align: center;
+}
+
+#btnAgregar{
+    border: 1px solid #616161;
+}
+#btnAgregar:hover{
+    background-color: #31ffba76;
+}
+
+#tablaContenido{
+    background-color: white;
+    margin-bottom: 0;
+}
+
+button > img{
+    width: 25px;
+    height: 25px;
+}
