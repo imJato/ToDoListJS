@@ -1,8 +1,11 @@
 let listaTareas = [];
 
-{
-    // data-bs-toggle="modal" data-bs-target="#exampleModal"
-}
+const botonEditarModal = document.createElement("button");
+botonEditarModal.id = "botonEditarModal";
+botonEditarModal.className = "btn btn-primary";
+botonEditarModal.textContent = "Acutalizar";
+botonEditarModal.setAttribute("data-bs-dismiss", "modal");
+
 function listar(lista) {
   const tabla = document.getElementById("tbodyTabla");
   tabla.innerHTML = "";
@@ -26,27 +29,31 @@ function listar(lista) {
     td = document.createElement("td");
     botonEditar = document.createElement("button");
     botonEditar.className = "btn";
-    botonEditar.id = "botonEditar"
+    botonEditar.id = "botonEditar";
     imagenEditar = document.createElement("img");
     imagenEditar.src = "Resources/editButton.png";
     imagenEditar.alt = "Editar";
     botonEditar.appendChild(imagenEditar);
     botonEditar.setAttribute("data-bs-toggle", "modal");
-    botonEditar.setAttribute("data-bs-target","#exampleModal");
-    // botonEditar.addEventListener("click",abrirModalEditar(params.id));
+    botonEditar.setAttribute("data-bs-target", "#exampleModal");
+    botonEditar.addEventListener("click", function () {
+      abrirModalEditar(params.id);
+    });
     td.appendChild(botonEditar);
 
     // boton eliminar
-    botonEliminar = document.createElement('button');
+    botonEliminar = document.createElement("button");
     botonEliminar.className = "btn";
-    botonEliminar.addEventListener("click",function(){eliminarTarea(params.id)});
+    botonEliminar.addEventListener("click", function () {
+      eliminarTarea(params.id);
+    });
     imagenEliminar = document.createElement("img");
     imagenEliminar.src = "Resources/deleteButton.png";
     imagenEliminar.alt = "Eliminar";
     botonEliminar.appendChild(imagenEliminar);
     td.appendChild(botonEliminar);
 
-    //agregando botones    
+    //agregando botones
     tr.appendChild(td);
     tabla.appendChild(tr);
   });
@@ -57,7 +64,7 @@ function agregarTarea() {
   const fecha = document.getElementById("txtFecha").value;
   const dificultad = document.getElementById("selectDificultades").value;
   const tarea = {
-    id: Math.random(),
+    id: Number.parseInt(Math.random() * 100),
     nombre: nombre,
     fecha: fecha,
     dificultad: dificultad,
@@ -68,49 +75,59 @@ function agregarTarea() {
   listar(listaTareas);
 }
 
-function eliminarTarea(param) {
-    listaTareas = listaTareas.filter(x => x.id != param);
-    listar(listaTareas);
-    console.log("Hello" + param);
+function eliminarTarea(id) {
+  listaTareas = listaTareas.filter((x) => x.id != id);
+  listar(listaTareas);
+  console.log("Hello" + id);
 }
 
-// function abrirModalEditar(id) {
-//     const txtNombre = document.getElementById("txtNombre");
-//     const txtFecha = document.getElementById("txtFecha");
-//     const nivel = document.getElementById("selectDificultades");
-//     const button = document.getElementById("botonGuardar");
-//     button.textContent = "Actualizar"
+function abrirModalEditar(id) {
+  const txtNombre = document.getElementById("txtNombre");
+  const txtFecha = document.getElementById("txtFecha");
+  const nivel = document.getElementById("selectDificultades");
+  const button = document.getElementById("botonGuardar");
+  const footer = document.getElementById("footer-modal");
+  button.hidden = true;
+  botonEditarModal.hidden = false;
+  const tarea = listaTareas.find((x) => x.id == id);
+  txtNombre.value = tarea.nombre;
+  txtFecha.value = tarea.fecha;
+  for (let index = 0; index < nivel.options.length; index++) {
+    if (nivel.options[index].text === tarea.dificultad)
+      nivel.selectedIndex = index;
+  }
 
-//     const tarea = listaTareas.filter(x => x.id == id);
-//     txtNombre.value = tarea.nombre;
-//     txtFecha.value = tarea.fecha;
-//     // nivel.selectedIndex = nivel.options.filter(x => x.text == tarea.dificultad);
+  botonEditarModal.addEventListener("click", function () {
+    actualizarTarea(id);
+  });
+  footer.appendChild(botonEditarModal);
+  
+}
 
-//     button.addEventListener("click",function(){actualizarTarea(tarea.id)});
+function actualizarTarea(id) {
+  const txtNombre = document.getElementById("txtNombre");
+  const txtFecha = document.getElementById("txtFecha");
+  const nivel = document.getElementById("selectDificultades");
+  
+  const index = listaTareas.findIndex((x) => (x.id == id));
+  listaTareas[index].id = id;
+  listaTareas[index].nombre = txtNombre.value;
+  listaTareas[index].fecha = txtFecha.value;
+  listaTareas[index].dificultad = nivel.value;
+  limpiar();
+  listar(listaTareas);
+  botonEditarModal.hidden = true;
+  botonEditarModal.removeEventListener('click', actualizarTarea(id), false)
+}
 
-// }
+function limpiar() {
+  const txtNombre = document.getElementById("txtNombre");
+  const txtFecha = document.getElementById("txtFecha");
+  const nivel = document.getElementById("selectDificultades");
+  const button = document.getElementById("botonGuardar");
+  button.hidden = false;
 
-
-// function actualizarTarea(params){
-//     const newTask = {
-//         id: params,
-//         nombre: txtNombre.value,
-//         fecha: txtFecha.value,
-//         dificultad: dificultad.options[dificultad.selectedIndex].text
-
-//     };
-
-//     const index = listaTareas.findIndex(x => x.id = params);
-//     listaTareas = listaTareas.splice(3, index, newTask);
-//     limpiar();
-//     listar(listaTareas);
-// }
-
-function limpiar(){
-    const txtNombre = document.getElementById("txtNombre");
-    const txtFecha = document.getElementById("txtFecha");
-    const nivel = document.getElementById("selectDificultades");
-    txtNombre.value= "";
-    txtFecha.value= "";
-    nivel.selectedIndex = nivel.options[1];
+  txtNombre.value = "";
+  txtFecha.value = "";
+  nivel.selectedIndex = nivel.options[0];
 }
