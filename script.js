@@ -1,10 +1,6 @@
 let listaTareas = [];
 
-const botonEditarModal = document.createElement("button");
-botonEditarModal.id = "botonEditarModal";
-botonEditarModal.className = "btn btn-primary";
-botonEditarModal.textContent = "Acutalizar";
-botonEditarModal.setAttribute("data-bs-dismiss", "modal");
+
 
 function listar(lista) {
   const tabla = document.getElementById("tbodyTabla");
@@ -82,6 +78,11 @@ function eliminarTarea(id) {
 }
 
 function abrirModalEditar(id) {
+  const botonEditarModal = document.createElement("button");
+  botonEditarModal.id = "botonEditarModal";
+  botonEditarModal.className = "btn btn-primary";
+  botonEditarModal.textContent = "Actualizar";
+  botonEditarModal.setAttribute("data-bs-dismiss", "modal");
   const txtNombre = document.getElementById("txtNombre");
   const txtFecha = document.getElementById("txtFecha");
   const nivel = document.getElementById("selectDificultades");
@@ -108,16 +109,19 @@ function actualizarTarea(id) {
   const txtNombre = document.getElementById("txtNombre");
   const txtFecha = document.getElementById("txtFecha");
   const nivel = document.getElementById("selectDificultades");
+  const botonEditarModal = document.getElementById("botonEditarModal");
+  const button = document.getElementById("botonGuardar");
+  const footer = document.getElementById("footer-modal");
   
   const index = listaTareas.findIndex((x) => (x.id == id));
   listaTareas[index].id = id;
   listaTareas[index].nombre = txtNombre.value;
   listaTareas[index].fecha = txtFecha.value;
   listaTareas[index].dificultad = nivel.value;
-  limpiar();
   listar(listaTareas);
-  botonEditarModal.hidden = true;
-  botonEditarModal.removeEventListener('click', actualizarTarea(id), false)
+  limpiar();
+  footer.removeChild(botonEditarModal);
+  button.hidden = false;
 }
 
 function limpiar() {
